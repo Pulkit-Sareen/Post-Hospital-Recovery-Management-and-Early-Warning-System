@@ -1,0 +1,976 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% For tables
+\usepackage{booktabs}
+
+% Variable: Lab Instructor
+\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
+  \gdef\Bvr@LabInstructor{#1}}
+% default
+\newcommand{\Bvr@LabInstructor}{Ms Paramveer %
+  Sidhu}
+% public accessor
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Add subtitle
+\usepackage{titling}
+% -- Set title bold
+\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip 0.5em}%
+}
+\makeatother
+
+% Hints in the section title(s)
+\newcommand{\BvrHint}[1]{%
+  {\normalfont\normalsize\itshape\hfill #1}}
+
+% Table formatting
+\newcommand{\BvrTableHeader}[1]{\textbf{#1}}
+
+% =====================================================
+
+\title{Post-Hospital Recovery Management and Early-Warning System}
+
+\BvrSetLabInstructor{Ms Paramveer Sidhu}
+
+\BvrSubtitle{%
+  Project Proposal for UCS503P  \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology% 
+}
+
+\author{
+  Pulkit Sareen, CSED \and
+  Shivam Singh, CSED \and
+  Daksh Anand, CSED%
+}
+
+\date{16 August, 2026}
+
+\begin{document}
+\maketitle
+
+\section{Higher-order goal%
+  \BvrHint{\ldots secondary framing}}
+
+This project aims to improve the continuity and organization
+of patient care after hospital discharge by providing a centralized software
+platform for monitoring recovery progress, managing post-discharge activities,
+and identifying unusual recovery patterns that may require professional
+attention.
+
+The immediate engineering objective is to translate
+post-hospital recovery management into a measurable, deployable software
+solution that connects patients, healthcare professionals, and recovery data
+through a structured workflow.
+
+The system will not attempt to diagnose diseases or replace
+healthcare professionals. Instead, it will provide decision-support features
+that organize patient-reported information, monitor recovery trends, and
+highlight potentially concerning deviations for professional review.
+
+The project combines conventional software engineering with a
+lightweight machine-learning component. The software platform will manage
+users, recovery plans, medications, exercises, appointments, daily logs,
+notifications, and historical records, while machine learning will be used to
+identify deviations from expected recovery patterns and classify recovery
+trajectories.
+
+\section{Time-to-value %
+\BvrHint{\ldots primary heuristic}}
+
+We will deliver the project through incremental iterations,
+beginning with the core patient recovery workflow before introducing
+machine-learning functionality.
+
+The first iteration will focus on establishing a usable
+system where:
+\begin{itemize}[leftmargin=0.7cm]
+    \item A healthcare professional can create a patient's post-discharge recovery plan.
+    \item A patient can access the plan and submit daily recovery information.
+    \item Medication, exercise, and appointment schedules can be tracked.
+    \item Recovery information is stored with timestamps.
+    \item Patients can view their recovery history and progress.
+    \item Healthcare professionals can view patient recovery information.
+\end{itemize}
+
+Subsequent iterations will introduce:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recovery scoring.
+    \item Recovery trend visualization.
+    \item Rule-based alerts.
+    \item Machine-learning-based trajectory analysis.
+    \item Risk/deviation indicators.
+    \item Healthcare-professional dashboards.
+    \item Notifications.
+\end{itemize}
+
+We will prioritize working software and measurable
+functionality over premature complexity. Weekly iterations will be used to
+obtain feedback and identify problems in the workflow early.
+
+Success will be measured not only by whether the ML model
+produces predictions, but also by whether the complete software system can
+reliably collect recovery information, identify changes, present them clearly,
+and support timely professional review.
+
+\section{Problem Statement}
+
+After a patient leaves a hospital, recovery continues for
+days or weeks, but the patient's recovery information is often fragmented
+between prescriptions, appointments, personal notes, and occasional follow-up
+consultations.
+
+Common problems include:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Limited continuous monitoring:} Healthcare professionals may have little visibility into the patient's recovery between scheduled appointments.
+    \item \textbf{Fragmented information:} Medication schedules, exercise plans, symptoms, pain levels, mobility, and appointments may be tracked separately.
+    \item \textbf{Poor visibility of recovery trends:} A single measurement may not indicate whether a patient is improving or deteriorating. Changes over several days can be more informative.
+    \item \textbf{Delayed identification of unusual patterns:} A patient may experience a gradual deviation from their expected recovery pattern without recognizing its significance.
+    \item \textbf{Medication and exercise adherence:} Patients may forget or inconsistently follow prescribed post-discharge activities.
+    \item \textbf{Follow-up coordination:} Appointments and recovery milestones can be difficult to manage alongside daily recovery tasks.
+    \item \textbf{Information overload for healthcare professionals:} If large amounts of patient data are collected, professionals need a way to prioritize patients requiring attention rather than manually inspecting every record.
+    \item \textbf{Lack of structured historical data:} Recovery information collected from patients is often not organized into a consistent longitudinal record.
+\end{itemize}
+
+Why this matters now: post-hospital care involves a period
+where the patient is responsible for a significant part of their recovery while
+professional interaction may be intermittent. A software system that organizes
+this period into a continuous and measurable workflow can reduce information
+gaps and help professionals identify patients whose recovery requires review.
+
+\section{Proposed Solution %
+\BvrHint{\ldots Software Proposition}}
+
+\subsection{Overview}
+
+Build a web-based Post-Hospital Recovery Management and
+Early-Warning System with the following components:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Patient portal:} Patients view their recovery plan, medications, exercises, appointments, and daily tasks.
+    \item \textbf{Daily recovery logging:} Patients record structured information such as pain, mobility/function, sleep, symptoms, medication adherence, and exercise completion.
+    \item \textbf{Recovery timeline:} The system displays the patient's recovery progress over time instead of only showing the latest measurement.
+    \item \textbf{Recovery scoring:} A transparent application-level score summarizes multiple recovery dimensions.
+    \item \textbf{Rule-based monitoring:} Explicitly configured thresholds and repeated changes generate alerts for review.
+    \item \textbf{ML-based trajectory analysis:} A machine-learning model analyzes combinations and trends in recovery data to identify patterns that deviate from expected recovery trajectories.
+    \item \textbf{Healthcare-professional dashboard:} Professionals can view patient status, trends, alerts, and historical recovery information.
+    \item \textbf{Medication and exercise management:} Recovery activities can be scheduled and adherence can be recorded.
+    \item \textbf{Appointment management:} Follow-up appointments and recovery milestones can be stored and tracked.
+    \item \textbf{Notification system:} Patients can receive reminders while healthcare professionals can receive high-priority review notifications.
+    \item \textbf{Administrative dashboard:} Provides system-level information such as active patients, outstanding alerts, adherence statistics, and recovery trends.
+\end{itemize}
+
+The system is designed as a decision-support platform rather
+than an autonomous diagnostic system. ML predictions and alerts will indicate
+that a patient's data requires review rather than claiming that a patient has a
+particular disease or complication.
+
+\subsection{Core workflow}
+
+\subsubsection{1. Recovery plan creation}
+
+A healthcare professional creates a recovery plan for a
+discharged patient.
+
+The plan contains:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recovery category/procedure
+    \item Expected recovery duration
+    \item Recovery milestones
+    \item Measurements to track
+    \item Medication schedule
+    \item Exercise/activity schedule
+    \item Restrictions
+    \item Follow-up appointments
+\end{itemize}
+
+\subsubsection{2. Patient onboarding}
+
+The patient receives access to the recovery plan and can view
+their daily tasks.
+
+\subsubsection{3. Daily check-in}
+
+The patient submits structured information such as:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Pain level
+    \item Mobility/function level
+    \item Sleep duration
+    \item Temperature, when relevant to the selected recovery plan
+    \item Medication adherence
+    \item Exercise adherence
+    \item Newly reported symptoms
+    \item General recovery notes
+\end{itemize}
+
+The system records every submission with a timestamp.
+
+\subsubsection{4. Recovery analysis}
+
+The system calculates the patient's current recovery
+indicators and compares recent measurements with historical measurements and
+the expected recovery trajectory.
+
+\subsubsection{5. Rule-based monitoring}
+
+Explicitly configured conditions are checked.
+
+For example:
+\begin{itemize}[leftmargin=0.7cm]
+    \item A measurement exceeds a configured threshold.
+    \item A concerning symptom is reported.
+    \item Medication is repeatedly missed.
+    \item Recovery measurements change significantly over a short period.
+\end{itemize}
+
+These events can create a review flag.
+
+\subsubsection{6. Machine-learning analysis}
+
+The ML model analyzes the patient's longitudinal data and
+estimates whether the current trajectory is:
+\begin{itemize}[leftmargin=0.7cm]
+    \item On Track
+    \item Delayed
+    \item Potentially Concerning
+\end{itemize}
+
+The model may also produce a deviation/risk probability.
+
+\subsubsection{7. Professional review}
+
+Healthcare professionals see prioritized patients on their
+dashboard.
+
+They can inspect:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Current values
+    \item Historical trends
+    \item Recovery score
+    \item ML output
+    \item Reasons/features associated with the flag
+    \item Medication adherence
+    \item Exercise adherence
+    \item Patient notes
+    \item Previous alerts
+\end{itemize}
+
+The healthcare professional remains responsible for deciding
+whether further action is necessary.
+
+\subsubsection{8. Feedback}
+
+The outcome of professional review can be recorded in the
+system.
+
+This information can later become labeled data for evaluating
+or improving future versions of the ML model.
+
+\section{Solution Approach %
+\BvrHint{\ldots Engineering focus}}
+
+This is an engineering course project, so the primary focus
+will be on building a reliable software system around the recovery workflow
+rather than developing a novel medical ML algorithm.
+
+The ML component will use established, interpretable
+machine-learning techniques on structured longitudinal data.
+
+\subsection{Recovery data model %
+\BvrHint{\ldots structured patient history}}
+
+The system will represent recovery as a sequence of
+time-stamped observations rather than isolated values.
+
+A daily recovery record may contain:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Feature} & \textbf{Example} \\
+\midrule
+Recovery day & Day 7 \\
+Pain & 5/10 \\
+Mobility/function & 62\% \\
+Sleep & 6.5 hours \\
+Medication adherence & 100\% \\
+Exercise adherence & 67\% \\
+Temperature & 37.2°C \\
+Reported symptoms & None \\
+Patient note & Optional \\
+Timestamp & Date/time \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The exact measurements will depend on the selected recovery
+scenario.
+
+The initial implementation will focus on a limited set of
+measurable variables rather than attempting to monitor every possible medical
+parameter.
+
+\subsection{Recovery scoring %
+\BvrHint{\ldots transparent logic}}
+
+A preliminary recovery score will be implemented using a
+transparent weighted formula.
+
+For example:
+
+Recovery Score =
+\begin{itemize}[leftmargin=0.7cm]
+    \item 30\% Mobility/Function
+    \item 25\% Pain-related indicator
+    \item 15\% Exercise adherence
+    \item 15\% Medication adherence
+    \item 15\% Sleep indicator
+\end{itemize}
+
+The weights are application-level prototype assumptions and
+will not be presented as medically validated clinical standards.
+
+The purpose of this score is to provide an understandable
+summary of multiple recovery dimensions.
+
+It will be complemented by the patient's individual trend
+rather than being used as a standalone medical decision.
+
+\subsection{Rule-based alerts %
+\BvrHint{\ldots deterministic safety layer}}
+
+Rules will be used for conditions that can be explicitly
+specified.
+
+For example:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{IF} a configured critical symptom is reported $\rightarrow$ create high-priority review flag
+    \item \textbf{IF} a monitored measurement exceeds its configured threshold $\rightarrow$ create monitoring alert
+    \item \textbf{IF} medication adherence falls below a configured level $\rightarrow$ create adherence alert
+    \item \textbf{IF} recovery measurements show repeated deterioration $\rightarrow$ increase monitoring priority
+\end{itemize}
+
+The rules will be configurable according to the selected
+recovery scenario.
+
+The system will not autonomously diagnose the patient or
+prescribe treatment.
+
+\subsection{Machine-learning component %
+\BvrHint{\ldots non-research approach}}
+
+Machine learning will focus on recovery trajectory
+classification and anomaly detection.
+
+The initial model will use structured features such as:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Current pain level
+    \item Change in pain over previous days
+    \item Mobility/function
+    \item Change in mobility
+    \item Sleep
+    \item Medication adherence
+    \item Exercise adherence
+    \item Reported symptoms
+    \item Recovery day
+    \item Procedure/recovery category
+\end{itemize}
+
+The initial classification task will be:
+\begin{itemize}[leftmargin=0.7cm]
+    \item ON TRACK
+    \item DELAYED
+    \item POTENTIALLY CONCERNING
+\end{itemize}
+
+A lightweight model such as Random Forest will be
+evaluated first because it works well with tabular data and is relatively
+interpretable.
+
+For anomaly detection, an approach such as Isolation
+Forest may be evaluated to identify recovery observations that differ
+substantially from learned patterns.
+
+The project will compare the performance of the selected
+model against a simple rule-based baseline.
+
+This allows the project to answer an important engineering
+question: Does adding machine learning provide useful information
+beyond a simple deterministic recovery-score/rule system?
+
+\subsection{Dataset strategy %
+\BvrHint{\ldots practical educational approach}}
+
+The project will not depend on finding one perfect public
+post-discharge dataset.
+
+The dataset strategy will use two sources where possible:
+
+\subsubsection{Public/real-world data}
+
+Relevant publicly available healthcare and
+patient-reported-outcome datasets will be investigated and used where their
+variables and licensing/access conditions are appropriate.
+
+\subsubsection{Synthetic longitudinal data}
+
+Because a clean dataset containing all required
+post-discharge variables may not be publicly available, a synthetic patient
+dataset will be generated for development and testing.
+
+The synthetic data will represent different recovery
+trajectories, such as:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Normal recovery
+    \item Gradually improving recovery
+    \item Delayed recovery
+    \item Recovery with adherence problems
+    \item Recovery with temporary deviations
+    \item Recovery with significant deterioration patterns
+\end{itemize}
+
+The synthetic data generator will create time-series
+observations rather than independent random records.
+
+This allows the system to contain realistic longitudinal
+relationships such as:
+
+Expected recovery: Pain: $8 \rightarrow 7 \rightarrow 6 \rightarrow 5 \rightarrow 4 \rightarrow 3$
+
+Mobility: $30 \rightarrow 38 \rightarrow 45 \rightarrow 55 \rightarrow 65 \rightarrow 72$
+
+while also generating patients whose trajectories deviate
+from the expected pattern.
+
+Synthetic data will be clearly identified as simulated data
+and will not be presented as real clinical evidence.
+
+\subsection{Web architecture %
+\BvrHint{\ldots web-based solution}}
+
+The system will use a 3-tier architecture:
+
+\subsubsection{Frontend}
+
+A responsive React application will provide:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Patient dashboard
+    \item Daily check-in
+    \item Recovery timeline
+    \item Medication tracker
+    \item Exercise tracker
+    \item Appointment view
+    \item Healthcare-professional dashboard
+    \item Alert management
+\end{itemize}
+
+\subsubsection{Backend}
+
+A FastAPI backend will handle:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Authentication
+    \item Authorization
+    \item Patient management
+    \item Recovery plans
+    \item Daily logs
+    \item Medication schedules
+    \item Exercise schedules
+    \item Appointment management
+    \item Alert generation
+    \item ML prediction requests
+    \item Notification logic
+    \item Audit/history records
+\end{itemize}
+
+\subsubsection{Database}
+
+The database will store:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Users
+    \item Patients
+    \item Healthcare professionals
+    \item Recovery plans
+    \item Daily recovery logs
+    \item Medications
+    \item Exercises
+    \item Appointments
+    \item Alerts
+    \item ML predictions
+    \item Review outcomes
+\end{itemize}
+
+The architecture will keep the ML component separate from the
+primary API logic so that the model can be updated without redesigning the
+entire application.
+
+\subsection{ML service architecture}
+
+The ML pipeline will be separated into:
+
+Patient Recovery Data $\rightarrow$
+Data Validation $\rightarrow$
+Feature Engineering $\rightarrow$
+ML Model $\rightarrow$
+Prediction $\rightarrow$
+Recovery Engine $\rightarrow$
+Database $\rightarrow$
+Dashboard / Alert
+
+The model will not directly communicate a medical diagnosis
+to the patient.
+
+Instead, it will return structured information such as:
+\begin{itemize}[leftmargin=0.7cm]
+    \item status: ``potentially\_concerning''
+    \item probability: 0.76
+    \item model\_version: ``v1''
+    \item timestamp: ...
+\end{itemize}
+
+The backend can then determine how that prediction should be
+displayed and whether professional review should be prioritized.
+
+\subsection{Authentication and authorization}
+
+Different user roles will have different permissions.
+
+\subsubsection{Patient}
+
+Can:
+\begin{itemize}[leftmargin=0.7cm]
+    \item view their recovery plan
+    \item submit daily logs
+    \item view their own recovery history
+    \item manage reminders
+    \item view appointments
+    \item receive notifications
+\end{itemize}
+
+\subsubsection{Healthcare professional}
+
+Can:
+\begin{itemize}[leftmargin=0.7cm]
+    \item create recovery plans
+    \item view assigned patients
+    \item inspect recovery trends
+    \item review alerts
+    \item record review outcomes
+    \item modify recovery schedules
+\end{itemize}
+
+\subsubsection{Administrator}
+
+Can:
+\begin{itemize}[leftmargin=0.7cm]
+    \item manage users
+    \item monitor system activity
+    \item view aggregate statistics
+    \item manage system configuration
+\end{itemize}
+
+Role-based access control will prevent patients from
+accessing other patients' information.
+
+\section{Evaluation Criterion %
+\BvrHint{\ldots measurable and attributable}}
+
+The project will define measurable criteria for both the
+software system and the ML component.
+
+\subsection{Primary evaluation metric}
+
+\textbf{Recovery monitoring completeness}
+
+Measure the percentage of scheduled patient check-ins that
+are successfully recorded and processed by the system.
+
+\textbf{Target:}
+$\ge$ 90\% of simulated scheduled check-ins successfully stored
+and processed during the pilot.
+
+\textbf{Attribution:}
+Calculated from database records containing expected
+check-ins and successfully submitted logs.
+
+\subsection{Secondary software metrics}
+
+\textbf{Alert processing time}
+
+Measure the time between submission of a recovery log and
+creation of the corresponding alert/prediction.
+
+\textbf{Target:} The system should process a normal recovery submission within
+a few seconds under the project test load.
+
+\textbf{Medication adherence tracking}
+
+Measure whether the system correctly records scheduled and
+completed medication events.
+
+\textbf{Appointment tracking}
+
+Measure whether scheduled appointments and reminders are
+correctly generated and displayed.
+
+\textbf{System reliability}
+
+Measure:
+\begin{itemize}[leftmargin=0.7cm]
+    \item API availability
+    \item failed requests
+    \item database errors
+    \item authentication failures
+\end{itemize}
+
+\textbf{User clarity}
+
+Pilot users can rate how clearly the system communicates:
+\begin{itemize}[leftmargin=0.7cm]
+    \item recovery status
+    \item daily tasks
+    \item alerts
+    \item recovery trends
+\end{itemize}
+
+using a simple 1--5 scale.
+
+\subsection{ML evaluation metrics}
+
+The ML model will be evaluated using:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Accuracy
+    \item Precision
+    \item Recall
+    \item F1-score
+    \item Confusion matrix
+\end{itemize}
+
+Special attention will be given to recall for the
+potentially concerning class, because failing to identify a concerning
+simulated recovery trajectory is an important failure mode for the prototype.
+
+The model will be compared with a simple rule-based baseline.
+
+Example evaluation:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Rule System} & \textbf{ML Model} \\
+\midrule
+Accuracy & XX\% & XX\% \\
+Precision & XX\% & XX\% \\
+Recall & XX\% & XX\% \\
+F1 Score & XX\% & XX\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The final values will be filled after model training and
+testing rather than being claimed beforehand.
+
+\subsection{Pilot validation plan}
+
+A controlled educational pilot can be conducted using:
+\begin{itemize}[leftmargin=0.7cm]
+    \item 10--20 test users
+    \item Simulated patient recovery cases
+    \item Student testers acting as patients
+    \item Student/teacher-supervised users acting as healthcare professionals where appropriate
+\end{itemize}
+
+The pilot will measure:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Completion of daily check-ins
+    \item Correctness of workflow
+    \item Alert generation
+    \item Dashboard usability
+    \item ML prediction performance
+    \item Response time
+    \item User clarity
+\end{itemize}
+
+No real patient's medical information will be required for
+the educational prototype.
+
+\section{Scalability %
+\BvrHint{\ldots with foresight}}
+
+The proposition should scale in both theoretical and
+practical senses.
+
+\subsection{1. Scalable architecture}
+
+The system will support growth in patient and recovery-log
+volume through:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Separate frontend and backend components
+    \item Stateless API design
+    \item Database indexing
+    \item Pagination for patient records
+    \item Efficient querying of time-series recovery logs
+    \item Separate ML inference service
+    \item Background processing for notifications
+\end{itemize}
+
+\subsection{2. ML scalability}
+
+The ML model will be versioned independently from the main
+application.
+
+For example:
+
+Model v1 $\rightarrow$ Model v2 $\rightarrow$ Model v3
+
+Predictions will store the model version that generated them.
+
+This makes it possible to compare model versions and roll
+back an updated model if required.
+
+\subsection{3. Operational deployment}
+
+The system should be deployable using common web
+infrastructure:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Managed database
+    \item Cloud-hosted backend
+    \item Cloud-hosted frontend
+    \item Containerized services where appropriate
+    \item CI/CD pipeline
+    \item Environment-based configuration
+\end{itemize}
+
+\section{Engine availability heuristic}
+
+A mature set of development tools and services is available
+to implement the system as a web-based project.
+
+The proposed stack is:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Frontend:} React
+    \item \textbf{Styling/UI:} Tailwind CSS
+    \item \textbf{Backend:} FastAPI
+    \item \textbf{Database:} PostgreSQL or MongoDB
+    \item \textbf{ML:} Python, NumPy, pandas, scikit-learn
+    \item \textbf{Data visualization:} Recharts
+    \item \textbf{Authentication:} JWT/token-based authentication
+    \item \textbf{Testing:} Pytest and frontend testing tools
+    \item \textbf{Version control:} Git and GitHub
+    \item \textbf{CI:} GitHub Actions
+    \item \textbf{Deployment:} Vercel for frontend and Render or equivalent platform for backend
+    \item \textbf{Containerization:} Docker where required
+\end{itemize}
+
+These are mature technologies, allowing the project team to
+focus on recovery workflow design, ML integration, testing, security, and
+system correctness rather than developing infrastructure from scratch.
+
+\section{Project scope and deliverables %
+\BvrHint{\ldots iteration-friendly}}
+
+\subsection{Initial deliverable %
+\BvrHint{\ldots first iteration}}
+
+The first iteration will contain:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Patient and healthcare-professional authentication
+    \item Patient profile
+    \item Recovery plan creation
+    \item Patient recovery-plan view
+    \item Daily recovery check-in
+    \item Recovery data storage
+    \item Medication schedule
+    \item Exercise schedule
+    \item Appointment schedule
+    \item Basic recovery history
+    \item Database timestamps
+    \item Basic backend tests
+    \item CI pipeline
+    \item Deployment to staging
+\end{itemize}
+
+At the end of this iteration, a complete patient $\rightarrow$ daily
+check-in $\rightarrow$ database $\rightarrow$ professional dashboard workflow should be functional.
+
+\subsection{Subsequent deliverables}
+
+\subsubsection{Iteration 2}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recovery score
+    \item Recovery trend graphs
+    \item Medication adherence calculation
+    \item Exercise adherence calculation
+    \item Rule-based alerts
+    \item Notification system
+\end{itemize}
+
+\subsubsection{Iteration 3}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Synthetic patient-data generator
+    \item ML training pipeline
+    \item Recovery trajectory classification
+    \item Anomaly detection
+    \item Model evaluation
+    \item Prediction API
+\end{itemize}
+
+\subsubsection{Iteration 4}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Healthcare-professional command center
+    \item Patient prioritization
+    \item ML prediction visualization
+    \item Alert history
+    \item Professional review workflow
+    \item Feedback/outcome recording
+\end{itemize}
+
+\subsubsection{Final iteration}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Security improvements
+    \item Performance testing
+    \item Integration testing
+    \item ML model comparison
+    \item UI refinement
+    \item Documentation
+    \item CI/CD improvements
+    \item Final deployment
+    \item Final evaluation
+\end{itemize}
+
+\section{Risks and mitigations}
+
+\subsection{Medical interpretation risk}
+
+\textbf{Risk:} Users may interpret the ML output as a medical
+diagnosis.
+
+\textbf{Mitigation:}
+The system will clearly state that ML outputs are
+decision-support indicators for professional review. The system will not
+provide autonomous diagnosis or treatment recommendations.
+
+\subsection{Data availability}
+
+\textbf{Risk:} A public dataset may not contain all required
+post-discharge variables.
+
+\textbf{Mitigation:}
+Use relevant public datasets where appropriate and create a
+documented synthetic longitudinal dataset for development and evaluation.
+
+\subsection{Synthetic-data bias}
+
+\textbf{Risk:} A model trained primarily on synthetic data may not
+represent real-world patients.
+
+\textbf{Mitigation:}
+Clearly identify synthetic data as simulated, evaluate the
+model only within the scope of the simulated experiment, and avoid making
+claims of clinical validity.
+
+\subsection{False alerts}
+
+\textbf{Risk:} The system may produce too many alerts.
+
+\textbf{Mitigation:}
+Use a combination of deterministic rules and ML confidence
+thresholds, record alert history, and evaluate false-positive rates during
+testing.
+
+\subsection{Missed concerning patterns}
+
+\textbf{Risk:} The ML system may fail to identify a simulated
+concerning recovery pattern.
+
+\textbf{Mitigation:}
+Evaluate recall separately for the potentially concerning
+class and keep the professional review layer in the workflow.
+
+\subsection{Data privacy}
+
+\textbf{Risk:} Recovery information is sensitive.
+
+\textbf{Mitigation:}
+For the educational prototype, use synthetic data whenever
+possible. If real data is ever introduced, collect only necessary information,
+apply role-based access control, avoid exposing patient information through
+logs, and follow appropriate privacy requirements.
+
+\subsection{Model drift}
+
+\textbf{Risk:} A future dataset may differ from the training data.
+
+\textbf{Mitigation:}
+Store model versions, prediction timestamps, and evaluation
+metrics. Future models will be evaluated before deployment.
+
+\subsection{System reliability}
+
+\textbf{Risk:} Failure of the ML service should not make the entire
+application unavailable.
+
+\textbf{Mitigation:}
+The core patient-recording and recovery-management system
+will continue to function even if ML inference is temporarily unavailable. ML
+predictions will be treated as an additional service rather than the foundation
+of the entire application.
+
+\section{Summary}
+
+This project proposes a deployable web-based Post-Hospital
+Recovery Management and Early-Warning System that provides a structured
+workflow for managing the period after hospital discharge.
+
+The system will allow healthcare professionals to create
+recovery plans and patients to record daily recovery information, manage
+medications and exercises, track appointments, and monitor their progress over
+time.
+
+A transparent recovery-score and rule-based monitoring layer
+will provide understandable baseline functionality, while machine learning will
+analyze longitudinal recovery data to identify patterns that deviate from
+expected recovery trajectories.
+
+The project deliberately avoids attempting autonomous medical
+diagnosis. Instead, ML outputs will be presented as indicators that can help
+prioritize cases for professional review.
+
+The project meets the requirements of a Software Engineering
+course by emphasizing:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Requirements and workflow design
+    \item Role-based access control
+    \item Web architecture
+    \item Database design
+    \item API development
+    \item Testing
+    \item CI/CD
+    \item Deployment
+    \item Scalability
+    \item Measurable evaluation
+    \item Machine-learning integration
+    \item Data privacy
+    \item Human-in-the-loop decision making
+\end{itemize}
+
+The project will follow an iterative development process,
+beginning with the core recovery-management workflow and progressively adding
+analytics, alerts, machine learning, and professional dashboards.
+
+The final system will demonstrate how a relatively
+lightweight machine-learning component can be integrated into a complete
+software product to transform longitudinal recovery data into useful,
+explainable, and actionable information for professional review.
+
+\end{document}
